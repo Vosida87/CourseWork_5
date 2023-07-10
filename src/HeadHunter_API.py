@@ -1,5 +1,4 @@
 import requests
-import json
 import psycopg2
 
 
@@ -12,7 +11,6 @@ class HeadHunterAPI:
         self.company_id = company_id
         self.vacancies_url = "https://api.hh.ru/vacancies"
         self.company_url = f"https://api.hh.ru/employers/{self.company_id}"
-        # "self.vacancies_url":"https://api.hh.ru/vacancies?employer_id=self.employer_id"
         self.params = {"per_page": 50,
                        "employer_id": self.company_id,
                        }
@@ -69,12 +67,13 @@ class HeadHunterAPI:
     def write_information_to_the_database(self):
         """
         функция запишет полученные данные в базу данных
+        !!!!(НУЖНО ВПИСАТЬ СВОИ ДАННЫЕ ДЛЯ СОЕДИНЕНИЯ)!!!!
         """
         with psycopg2.connect(
-                host='localhost',
-                database='CourseWork_5',
-                user='postgres',
-                password='octosql',
+                host='',
+                database='',
+                user='',
+                password='',
         ) as conn:
             with conn.cursor() as cur:
                 cur.execute("INSERT INTO companies VALUES (%s, %s, %s, %s, %s)", (
