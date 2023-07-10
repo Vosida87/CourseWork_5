@@ -1,5 +1,6 @@
 import requests
 import json
+import psycopg2
 
 
 class HeadHunterAPI:
@@ -40,3 +41,50 @@ class HeadHunterAPI:
         company_data = response.json()
         self.company_info.append(company_data)
         return company_data
+
+    def formate_vacancies(self):
+        """
+        функция переформатирует список вакансий для запизи в базу данных
+        """
+        formatted_vacancies = []
+        for vacancy in self.vacancies:
+            if vacancy['salary'] is None:
+                salary_from = None
+                salary_to = None
+            else:
+                salary_from = vacancy['salary']['from']
+                salary_to = vacancy['salary']['to']
+            formatted_vacancy = (self.company_id,
+                                 vacancy['id'],
+                                 vacancy['name'],
+                                 vacancy['snippet']['responsibility'],
+                                 salary_from,
+                                 salary_to,
+                                 vacancy['alternate_url']
+                                 )
+            formatted_vacancies.append(formatted_vacancy)
+        self.vacancies = formatted_vacancies
+        return self.vacancies
+
+    def write_information_to_the_database(self):
+        """
+        функция запишет полученные данные в базу данных
+        """
+        with psycopg2.connect(
+                host='localhost',
+                database='CourseWork_5',
+                user='postgres',
+                password='octosql',
+        ) as conn:
+            with conn.cursor() as cur:
+                cur.execute("INSERT INTO companies VALUES (%s, %s, %s, %s, %s)", (
+                    self.company_id,
+                    self.company_info[0]['name'],
+                    self.company_info[0]['alternate_url'],
+                    self.company_info[0]['description'],
+                    self.company_info[0]['open_vacancies'],
+                )
+                                )
+                cur.executemany("INSERT INTO vacancies VALUES (%s, %s, %s, %s, %s, %s, %s)", self.vacancies)
+
+        conn.close()

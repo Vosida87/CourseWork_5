@@ -1,3 +1,5 @@
+from HeadHunter_API import HeadHunterAPI
+
 def main():
     company_id_dict = {'Пив&Ко': 865513,
                        'Мегафон': 3127,
@@ -10,3 +12,15 @@ def main():
                        'ALOEsmart': 3274487,
                        'ООО ИНТЕЛАЙТ': 3692182,
                        }
+
+    data_values = company_id_dict.values()
+
+    for value in data_values:
+        company = HeadHunterAPI(value)
+        company.get_vacancies()
+        company.get_company_info()
+        company.formate_vacancies()
+        company.write_information_to_the_database()
+
+if __name__ == "__main__":
+    main()
