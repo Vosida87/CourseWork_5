@@ -11,7 +11,7 @@ CREATE TABLE vacancies(
 	vacancy_id INT UNIQUE,
 	vacancy_name VARCHAR(100),
 	vacancy_info TEXT,
-	salary_from INT OR NONE,
-	salary_to INT OR NONE,
+	salary_from INT,
+	salary_to INT,
 	vacancy_url VARCHAR(100)
 )
